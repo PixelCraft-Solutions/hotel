@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Elegant Lodge Galle</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--navy:#0f1b2d;--navy-dark:#091422;--gold:#c9a84c;--teal:#2a9d8f;--cream:#f8f6f0;--text:#1a1a2e;--muted:#6b7280;--white:#fff;--shadow:0 4px 24px rgba(0,0,0,.08);--radius:12px}
+    body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--navy) 0%,var(--navy-dark) 100%);padding:20px}
+    .login-card{background:var(--white);border-radius:var(--radius);padding:48px 40px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+    .login-card img{height:80px;margin-bottom:8px}
+    .login-card h1{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:4px;color:var(--navy)}
+    .login-card>p,.login-card .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+    .field{margin-bottom:16px;text-align:left}
+    .field label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--text)}
+    .field input,.field textarea,.field select{width:100%;padding:11px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;transition:border .2s}
+    .field input:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+    .err{color:#e74c3c;font-size:13px;margin-bottom:12px;display:none;background:#fdf0ef;padding:12px 14px;border-radius:8px;text-align:left;border:1px solid #f5c6cb;line-height:1.5}
+    .btn-full{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-full:hover{background:#23897e}
+    .btn-full:disabled{opacity:.5;cursor:not-allowed}
+    .btn-full.gold{background:var(--gold);color:var(--navy)}
+    .btn-full.gold:hover{background:#b8943f}
+    .btn-full.outline{background:transparent;border:1.5px solid #ddd;color:var(--text)}
+    .btn-full.outline:hover{border-color:var(--teal);color:var(--teal)}
+    .divider{margin:20px 0;border:none;border-top:1px solid #eee}
+    .link-btn{background:none;border:none;color:var(--teal);font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;margin-top:16px}
+    .link-btn:hover{color:#23897e}
+    .back-link{display:inline-block;margin-top:16px;color:var(--muted);font-size:13px;text-decoration:none;cursor:pointer}
+    .back-link:hover{color:var(--text)}
+
+    /* Dashboard */
+    .dashboard{display:none;min-height:100vh}
+    .dash-topbar{background:var(--navy);color:#fff;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+    .dash-topbar h2{font-family:'Playfair Display',serif;font-size:20px}
+    .dash-topbar .right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .dash-topbar .user{font-size:13px;color:rgba(255,255,255,.7)}
+    .dash-topbar .btn-sm-nav{background:rgba(255,255,255,.12);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600}
+    .dash-topbar .btn-sm-nav:hover{background:rgba(255,255,255,.22)}
+    .dash-topbar .btn-sm-gold{background:var(--gold);color:var(--navy);border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;text-decoration:none}
+    .dash-body{max-width:1100px;margin:0 auto;padding:32px 24px}
+    .dash-tabs{display:flex;gap:4px;margin-bottom:28px;background:var(--white);border-radius:var(--radius);padding:6px;box-shadow:var(--shadow);overflow-x:auto}
+    .dash-tab{padding:10px 20px;border:none;background:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--muted);transition:all .2s}
+    .dash-tab.active{background:var(--teal);color:#fff}
+    .dash-tab:hover:not(.active){background:#eee}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .card{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:24px}
+    .card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:20px;color:var(--navy);display:flex;align-items:center;gap:10px}
+    .card h3 i{color:var(--teal);font-size:18px}
+    .form-row{display:grid;gap:18px}
+    .form-row.cols-2{grid-template-columns:1fr 1fr}
+    .form-group{margin-bottom:16px}
+    .form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--text)}
+    .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;transition:border .2s;background:#fff}
+    .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--teal)}
+    .form-group textarea{resize:vertical;min-height:80px}
+    .btn{padding:10px 24px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{background:var(--teal);color:#fff}
+    .btn-primary:hover{background:#23897e}
+    .btn-danger{background:#e74c3c;color:#fff}
+    .btn-danger:hover{background:#c0392b}
+    .btn-outline{background:transparent;border:1.5px solid #ddd;color:var(--text)}
+    .btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+    .btn-sm{padding:6px 14px;font-size:12px}
+    .save-bar{display:flex;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid #eee}
+    .save-bar .status{font-size:13px;color:var(--muted)}
+    .save-bar .status.success{color:var(--teal)}
+    .save-bar .status.error{color:#e74c3c}
+
+    .gallery-upload{border:2px dashed #ddd;border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;transition:border .2s;margin-bottom:24px}
+    .gallery-upload:hover,.gallery-upload.dragover{border-color:var(--teal);background:rgba(42,157,143,.04)}
+    .gallery-upload i{font-size:36px;color:var(--muted);margin-bottom:12px;display:block}
+    .gallery-upload p{color:var(--muted);font-size:14px}
+    .gallery-upload input{display:none}
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+    .gallery-thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#eee}
+    .gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .gallery-thumb .remove{position:absolute;top:6px;right:6px;width:26px;height:26px;background:rgba(231,76,60,.9);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+    .gallery-thumb:hover .remove{opacity:1}
+    .gallery-thumb .order{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px}
+
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:14px 22px;border-radius:8px;font-size:14px;z-index:9999;display:none}
+    .toast.show{display:block;animation:slideIn .3s ease}
+    @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+    @media(max-width:768px){.login-card,.setup-card{padding:28px 20px}.form-row.cols-2{grid-template-columns:1fr}.dash-topbar{padding:12px 16px}.dash-tab{padding:8px 14px;font-size:13px}}
+  </style>
+</head>
+<body>
+
+  <!-- ========== LOGIN ========== -->
+  <div class="login-wrap" id="loginScreen">
+    <div class="login-card">
+      <img src="logo.png" alt="Elegant Lodge">
+      <h1>Admin Dashboard</h1>
+      <p class="sub">Sign in to manage your website</p>
+      <div class="err" id="loginError"></div>
+      <div class="field">
+        <label for="loginUser">Username</label>
+        <input type="text" id="loginUser" placeholder="Enter username" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
+      </div>
+      <button class="btn-full" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Website</a>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD ========== -->
+  <div class="dashboard" id="dashboard">
+    <div class="dash-topbar">
+      <h2><i class="fas fa-cog"></i> Elegant Lodge CMS</h2>
+      <div class="right">
+        <a href="index.html" class="btn-sm-gold" target="_blank"><i class="fas fa-external-link-alt"></i> View Site</a>
+        <span class="user" id="dashUser"></span>
+        <button class="btn-sm-nav" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-tabs" id="tabBar">
+        <button class="dash-tab active" data-tab="home"><i class="fas fa-home"></i> Home</button>
+        <button class="dash-tab" data-tab="about"><i class="fas fa-info-circle"></i> About</button>
+        <button class="dash-tab" data-tab="rooms"><i class="fas fa-bed"></i> Rooms</button>
+        <button class="dash-tab" data-tab="gallery"><i class="fas fa-images"></i> Gallery</button>
+        <button class="dash-tab" data-tab="contact"><i class="fas fa-envelope"></i> Contact</button>
+      </div>
+
+      <!-- HOME -->
+      <div class="tab-panel active" id="tab-home">
+        <div class="card">
+          <h3><i class="fas fa-heading"></i> Hero Section</h3>
+          <div class="form-group"><label>Tagline</label><input type="text" id="home-hero-tag"></div>
+          <div class="form-group"><label>Title (use &lt;br&gt; for line break, &lt;em&gt; for italic)</label><input type="text" id="home-hero-title"></div>
+          <div class="form-group"><label>Description</label><textarea id="home-hero-desc" rows="3"></textarea></div>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>WhatsApp Button</label><input type="text" id="home-wa-text"></div>
+            <div class="form-group"><label>Call Button</label><input type="text" id="home-call-text"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-chart-bar"></i> Stats Bar</h3>
+          <div id="statsEditor"></div>
+          <button class="btn btn-outline btn-sm" id="addStatBtn" style="margin-top:12px"><i class="fas fa-plus"></i> Add Stat</button>
+        </div>
+        <div class="save-bar"><button class="btn btn-primary" data-save="home"><i class="fas fa-save"></i> Save Home</button><span class="status" id="status-home"></span></div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="tab-panel" id="tab-about">
+        <div class="card">
+          <h3><i class="fas fa-info-circle"></i> About Section</h3>
+          <div class="form-group"><label>Eyebrow</label><input type="text" id="about-eyebrow"></div>
+          <div class="form-group"><label>Title</label><input type="text" id="about-title"></div>
+          <div class="form-group"><label>Description</label><textarea id="about-desc" rows="3"></textarea></div>
+          <div class="form-group"><label>Checklist (one per line)</label><textarea id="about-checklist" rows="4"></textarea></div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-book-open"></i> Our Story</h3>
+          <div class="form-group"><label>Eyebrow</label><input type="text" id="story-eyebrow"></div>
+          <div class="form-group"><label>Title</label><input type="text" id="story-title"></div>
+          <div class="form-group"><label>Paragraphs (blank line = new paragraph)</label><textarea id="story-text" rows="5"></textarea></div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-utensils"></i> Breakfast</h3>
+          <div class="form-group"><label>Eyebrow</label><input type="text" id="breakfast-eyebrow"></div>
+          <div class="form-group"><label>Title</label><input type="text" id="breakfast-title"></div>
+          <div class="form-group"><label>Description</label><textarea id="breakfast-desc" rows="3"></textarea></div>
+          <div class="form-group"><label>Items (one per line)</label><textarea id="breakfast-items" rows="3"></textarea></div>
+        </div>
+        <div class="save-bar"><button class="btn btn-primary" data-save="about"><i class="fas fa-save"></i> Save About</button><span class="status" id="status-about"></span></div>
+      </div>
+
+      <!-- ROOMS -->
+      <div class="tab-panel" id="tab-rooms">
+        <div class="card">
+          <h3><i class="fas fa-bed"></i> Room Amenities</h3>
+          <div id="amenitiesEditor"></div>
+          <button class="btn btn-outline btn-sm" id="addAmenBtn" style="margin-top:12px"><i class="fas fa-plus"></i> Add Amenity</button>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-concierge-bell"></i> Facilities</h3>
+          <div id="facilitiesEditor"></div>
+          <button class="btn btn-outline btn-sm" id="addFacBtn" style="margin-top:12px"><i class="fas fa-plus"></i> Add Facility</button>
+        </div>
+        <div class="save-bar"><button class="btn btn-primary" data-save="rooms"><i class="fas fa-save"></i> Save Rooms</button><span class="status" id="status-rooms"></span></div>
+      </div>
+
+      <!-- GALLERY -->
+      <div class="tab-panel" id="tab-gallery">
+        <div class="card">
+          <h3><i class="fas fa-images"></i> Gallery Images</h3>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Upload images. They will appear on the gallery page for all visitors.</p>
+          <div class="gallery-upload" id="uploadZone">
+            <i class="fas fa-cloud-arrow-up"></i>
+            <p><strong>Click to upload</strong> or drag images here</p>
+            <p style="font-size:12px;margin-top:4px">JPG, PNG, WebP — Max 5MB each</p>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+          </div>
+          <div id="galleryProgress" style="display:none;margin-bottom:16px">
+            <div style="background:#eee;border-radius:4px;height:6px;overflow:hidden"><div id="progressBar" style="height:100%;background:var(--teal);width:0%;transition:width .3s"></div></div>
+            <p id="progressText" style="font-size:12px;color:var(--muted);margin-top:6px"></p>
+          </div>
+
+          <!-- URL Input Section -->
+          <div style="background:#f0f9f7;border:1px solid #c8e6e0;border-radius:8px;padding:16px;margin-bottom:20px">
+            <h4 style="font-size:14px;font-weight:600;margin-bottom:10px;color:var(--navy)"><i class="fas fa-link" style="color:var(--teal);margin-right:6px"></i> Add Image by URL</h4>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Paste image web address below (e.g. from Google Photos, Instagram, or any website)</p>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="imageUrlInput" placeholder="https://example.com/photo.jpg" style="flex:1;padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit">
+              <button class="btn btn-primary" id="addUrlBtn" style="white-space:nowrap"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div id="urlError" style="color:#e74c3c;font-size:12px;margin-top:6px;display:none"></div>
+          </div>
+
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+        <div class="save-bar"><button class="btn btn-primary" data-save="gallery"><i class="fas fa-save"></i> Save Gallery</button><span class="status" id="status-gallery"></span></div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="tab-panel" id="tab-contact">
+        <div class="card">
+          <h3><i class="fas fa-phone"></i> Contact Info</h3>
+          <div class="form-row cols-2">
+            <div class="form-group"><label>Phone</label><input type="text" id="contact-phone"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="contact-email"></div>
+          </div>
+          <div class="form-group"><label>Instagram</label><input type="text" id="contact-instagram"></div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-location-dot"></i> Thalpe Location</h3>
+          <div class="form-group"><label>Address</label><textarea id="contact-addr1" rows="2"></textarea></div>
+          <div class="form-group"><label>Maps Embed URL</label><input type="text" id="contact-map1"></div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-location-dot"></i> Galle City Location</h3>
+          <div class="form-group"><label>Address</label><textarea id="contact-addr2" rows="2"></textarea></div>
+          <div class="form-group"><label>Maps Embed URL</label><input type="text" id="contact-map2"></div>
+        </div>
+        <div class="save-bar"><button class="btn btn-primary" data-save="contact"><i class="fas fa-save"></i> Save Contact</button><span class="status" id="status-contact"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
